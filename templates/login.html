@@ -1,0 +1,145 @@
+<style>
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: radial-gradient(circle at center, #014665 0%, #007694 40%, #1B1B1B 100%);
+}
+
+
+.login-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  max-width: 900px;
+  background-color: #1B1B1B;
+  border: 2px solid #007694;
+  border-radius: 2%;
+  box-shadow: 0 0 2vw rgba(0, 118, 148, 0.4);
+  padding: 4%;
+}
+
+.login-logo {
+  width: 45%;
+  text-align: center;
+  padding-right: 5%;
+}
+
+.login-box {
+  width: 55%;
+  text-align: center;
+  color: #ffffff;
+}
+
+.login-logo-text h1 {
+  margin-bottom: 5%;
+  font-size: 1.8em;
+  color: #007694;
+}
+
+.login-logo-text p {
+  color: #718096;
+  margin-bottom: 10%;
+}
+
+.form-group {
+  margin-bottom: 5%;
+  text-align: left;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #ffffff;
+}
+
+input.form-control {
+  width: 100%;
+  padding: 3%;
+  border: 1px solid #007694;
+  border-radius: 1vw;
+  font-size: 1em;
+  background-color: #2a3b5f;
+  color: #ffffff;
+}
+
+input::placeholder {
+  color: #b0c4de;
+}
+
+button.btn-primary,
+button.btn-secondary {
+  width: 100%;
+  padding: 3%;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 1vw;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+button.btn-primary {
+  background-color: #014665;
+  color: white;
+}
+
+button.btn-primary:hover {
+  background-color: #007694;
+}
+
+button.btn-secondary {
+  background-color: #2a3b5f;
+  color: white;
+}
+
+button.btn-secondary:hover {
+  background-color: #007694;
+}
+
+.login-footer {
+  margin-top: 4%;
+  font-size: 0.9em;
+  color: #718096;
+}
+
+.login-footer a {
+  color: #667eea;
+  text-decoration: none;
+}
+
+</style>
+<div class="vista">
+  <div class="login-page">
+    <div class="login-wrapper">
+      <div class="login-box">
+        <div class="login-logo-text">
+          <h1>LibroMundo</h1>
+          <p>Tu biblioteca personal en línea</p>
+        </div>
+
+        <form method="post" id="frmInicioSesion">
+          <div class="form-group">
+            <label for="txtUsuario">Email o Usuario</label>
+            <input type="text" id="txtUsuario" name="txtUsuario" class="form-control" placeholder="ejemplo@email.com">
+          </div>
+
+          <div class="form-group">
+            <label for="txtContrasena">Contraseña</label>
+            <input type="password" id="txtContrasena" name="txtContrasena" class="form-control" placeholder="••••••••">
+          </div>
+
+          <button type="submit" class="btn-primary while-waiting">Iniciar Sesión</button>
+          <button type="button" class="btn-secondary">Crear Cuenta Nueva</button>
+
+          <p class="login-footer">
+            <a href="#">¿Olvidaste tu contraseña?</a>
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

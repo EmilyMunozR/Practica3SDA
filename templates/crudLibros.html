@@ -1,0 +1,77 @@
+<div class="container-fluid mt-3">
+  <div class="row">
+    <!-- FORMULARIO A LA IZQUIERDA -->
+    <div class="col-lg-4">
+      <div ng-controller="crudLibrosCtrl">
+  
+        <form id="frmLibro" method="post" class="border rounded p-3 bg-transparent shadow-sm">
+  
+          <h5 class="mb-3">Registro de Libro</h5>
+          
+          <input type="hidden" id="idLibro" name="idLibro" ng-model="libro.idLibro">
+          
+          <div class="mb-2">
+            <label for="txtTitulo" class="form-label">Título</label>
+            <input type="text" class="form-control" id="txtTitulo" name="txtTitulo" ng-model="libro.titulo">
+          </div>
+  
+          <div class="mb-2">
+            <label for="txtAutor" class="form-label">Autor</label>
+            <input type="text" class="form-control" id="txtAutor" name="txtAutor" ng-model="libro.autor">
+          </div>
+  
+          <div class="mb-2">
+            <label for="txtTipo" class="form-label">Tipo</label>
+            <select class="form-select" id="txtTipo" name="txtTipo" ng-model="libro.tipo">
+              <option value="fisico">Físico</option>
+              <option value="digital">Digital</option>
+              <option value="mixto">Mixto</option>
+            </select>
+          </div>
+  
+          <div class="mb-2">
+            <label for="txtCategoria" class="form-label">Categoría</label>
+            <select class="form-select" id="txtCategoria" name="txtCategoria" ng-model="libro.idCategoria">
+              {% for categoria in categorias %}
+                <option value="{{ categoria.idCategoria }}">{{ categoria.nombre }}</option>
+              {% endfor %}
+            </select>
+          </div>
+  
+          <div class="mb-2">
+            <label for="txtSinopsis" class="form-label">Sinopsis</label>
+            <textarea class="form-control" id="txtSinopsis" name="txtSinopsis" rows="3" ng-model="libro.sinopsis"></textarea>
+          </div>
+  
+          <div class="text-end mt-3">
+            <button type="button" class="btn btn-success" id="btnGuardarLibro">Guardar</button>
+          </div>
+        </form>
+        
+    </div>
+ </div>
+
+    <!-- TABLA A LA DERECHA -->
+    <div class="col-lg-8">
+      <div class="border rounded p-3 shadow-sm">
+        <h5 class="mb-3">Libros Registrados</h5>
+        <div class="table-responsive">
+          <table class="table table-sm table-hover align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Acciones</th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tbodyCrudLibros">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

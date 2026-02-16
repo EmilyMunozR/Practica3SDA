@@ -1,0 +1,20 @@
+{% for libro in libros %}
+<tr>
+  <td>{{ libro.id_libro }}</td>
+  <td>{{ libro.titulo }}</td>
+  <td>{{ libro.autor }}</td>
+  <td>
+    <div class="btn-group btn-group-sm" role="group">
+      <button class="btn btn-outline-primary btnVerLibro" data-id="{{ libro.id_libro }}">
+        Ver más
+      </button>
+      <button class="btn btn-outline-info btnModificarLibro" data-id="{{ libro.id_libro }}">
+        Modificar
+      </button>
+      <button class="btn btn-outline-danger btnEliminarLibro" data-id="{{ libro.id_libro }}">
+        Eliminar
+      </button>
+    </div>
+  </td>
+</tr>
+{% endfor %}

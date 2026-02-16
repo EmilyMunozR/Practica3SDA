@@ -1,0 +1,52 @@
+<div class="vista" ng-controller="inicioCtrl">
+    <div class="hero-section">
+        <h1>Bienvenido a LibroMundo</h1>
+        <p>Explora nuestra colección de libros físicos, digitales y mixtos.</p>
+    </div>
+
+    <div class="card text-bg-dark mb-3" style="max-width: 20rem;">
+      <div class="card-header">Sesión activa</div>
+      <div class="card-body">
+        <h5 class="card-title">Bienvenido</h5>
+        <p class="card-text"><b>Usuario:</b>{{ "{{ SesionService.getUsr() }}" }}</p>
+      </div>
+    </div>
+
+{% raw %}
+    <!-- LIBROS FISICOS -->
+    <div class="section">
+        <h2 class="section-title">Libros Físicos</h2>
+        <div class="row">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 col-xxl-3" ng-repeat="libro in librosFisicos">
+                <div class="card text-bg-info mb-3">
+                    <div class="card-header">Libro</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ libro.titulo }}</h5>
+                        <p class="card-text">{{ libro.autor }}</p>
+                        <img class="img-fluid" ng-src="{{ libro.portada }}" alt="Portada">
+                        <span class="badge bg-dark mt-2">{{ libro.tipo | uppercase }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- LIBROS DIGI -->
+    <div class="section">
+        <h2 class="section-title">Libros Digitales</h2>
+        <div class="row">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 col-xxl-3" ng-repeat="libro in librosDigitales">
+                <div class="card text-bg-danger mb-3">
+                    <div class="card-header">Libro</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ libro.titulo }}</h5>
+                        <p class="card-text">{{ libro.autor }}</p>
+                        <img class="img-fluid" ng-src="{{ libro.portada }}" alt="Portada">
+                        <span class="badge bg-dark mt-2">{{ libro.tipo | uppercase }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endraw %}
+
+</div>

@@ -1,0 +1,42 @@
+<div class="container-fluid mt-3" ng-controller="crudCategoriasCtrl">
+  <div class="row">
+    <!-- FORMULARIO A LA IZQUIERDA -->
+    <div class="col-lg-4">
+      <form id="frmCategoria" ng-submit="guardarCategoria()" class="border rounded p-3 bg-transparent shadow-sm">
+        <input type="hidden" ng-model="categoria.idCategoria">
+
+        <h5 class="mb-3">Registro de Categoría</h5>
+
+        <div class="mb-2">
+          <label for="txtNombre" class="form-label">Nombre de la categoría</label>
+          <input type="text" id="txtNombre" class="form-control" ng-model="categoria.nombre" required>
+        </div>
+
+        <div class="text-end mt-3">
+          <button type="submit" class="btn btn-success">Guardar</button>
+          <button type="button" class="btn btn-secondary" ng-click="limpiarFormulario()">Limpiar</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- TABLA A LA DERECHA -->
+    <div class="col-lg-8">
+      <div class="border rounded p-3 shadow-sm">
+        <h5 class="mb-3">Categorías Registradas</h5>
+        <div class="table-responsive">
+          <table class="table table-sm table-hover align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Acciones</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tbodyCrudCategorias"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

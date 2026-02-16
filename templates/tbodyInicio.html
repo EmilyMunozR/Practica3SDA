@@ -1,0 +1,23 @@
+{% for tipo in ['fisico', 'digital', 'mixto'] %}
+<div class="section">
+    <div class="section-title">
+        {{ tipo | upper }} 📚
+    </div>
+    <div class="row">
+        {% for libro in libros if libro.tipo == tipo %}
+        <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 col-xxl-3">
+            <div class="card text-bg-info mb-3" style="max-width: 18rem;">
+                <div class="card-header">Libro</div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ libro.titulo }}</h5>
+                    <p class="card-text">{{ libro.autor }}</p>
+                    <p class="card-text">${{ libro.precio }}</p>
+                    <img class="img-fluid" src="{{ libro.portada }}" alt="Portada">
+                    <span class="badge bg-dark mt-2">{{ libro.tipo | upper }}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endfor %}

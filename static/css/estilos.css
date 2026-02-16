@@ -1,0 +1,317 @@
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+}
+.vista {
+    background: white;
+    margin-bottom: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    overflow: hidden;
+}
+.navbar {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    padding: 15px 30px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.search-bar {
+    flex: 1;
+    position: relative;
+}
+.search-bar input {
+    width: 100%;
+    padding: 12px 20px;
+    border-radius: 25px;
+    border: none;
+    font-size: 14px;
+    background: rgba(255,255,255,0.9);
+}
+.search-bar input:focus {
+    outline: 2px solid #667eea;
+}
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+.btn-secondary {
+    background: white;
+    color: #667eea;
+    padding: 12px 30px;
+    border: 2px solid #667eea;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-secondary:hover {
+    background: #667eea;
+    color: white;
+}
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 60px 30px;
+    text-align: center;
+    color: white;
+}
+.hero-section h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+.hero-section p {
+    font-size: 18px;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+.section {
+    padding: 40px 30px;
+}
+.section-title {
+    font-size: 28px;
+    margin-bottom: 25px;
+    color: #2d3748;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 25px;
+}
+.book-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+}
+.book-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+.book-cover {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+.book-info {
+    padding: 15px;
+}
+.book-title {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #2d3748;
+}
+.book-author {
+    color: #718096;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+.book-price {
+    font-size: 18px;
+    font-weight: bold;
+    color: #667eea;
+}
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 25px;
+}
+.category-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    padding: 40px 20px;
+    text-align: center;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+.category-card:hover {
+    transform: scale(1.05);
+}
+.category-icon {
+    font-size: 60px;
+    margin-bottom: 15px;
+}
+.category-name {
+    font-size: 20px;
+    font-weight: bold;
+}
+.login-container {
+    display: flex;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+}
+.login-box {
+    background: white;
+    padding: 50px;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    width: 100%;
+    max-width: 450px;
+}
+.login-logo {
+    text-align: center;
+    margin-bottom: 40px;
+}
+.login-logo h1 {
+    font-size: 36px;
+    color: #667eea;
+    margin-bottom: 10px;
+}
+.form-group {
+    margin-bottom: 25px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #2d3748;
+    font-weight: bold;
+}
+.form-group input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 16px;
+}
+.form-group input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+.profile-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 40px 30px;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 5px solid white;
+    object-fit: cover;
+    background: white;
+}
+.profile-info h2 {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+.profile-info p {
+    font-size: 16px;
+    opacity: 0.9;
+}
+.list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 25px;
+}
+.list-card {
+    background: linear-gradient(135deg, #f6f8fb 0%, #e9ecef 100%);
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s;
+    border: 2px solid #e2e8f0;
+}
+.list-card:hover {
+    transform: translateY(-5px);
+    border-color: #667eea;
+}
+.list-icon {
+    font-size: 50px;
+    margin-bottom: 15px;
+}
+.list-name {
+    font-size: 20px;
+    font-weight: bold;
+    color: #2d3748;
+    margin-bottom: 10px;
+}
+.list-count {
+    color: #718096;
+    font-size: 14px;
+}
+.filters {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+.filter-btn {
+    padding: 10px 20px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.filter-btn:hover {
+    border-color: #667eea;
+    color: #667eea;
+}
+.badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 8px;
+}
+.badge-physical {
+    background: #48bb78;
+    color: white;
+}
+.badge-digital {
+    background: #4299e1;
+    color: white;
+}
+.page-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 40px 30px;
+    text-align: center;
+    color: white;
+}
+.page-header h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+.page-header .icon {
+    font-size: 60px;
+    margin-bottom: 15px;
+}
+
+
+
