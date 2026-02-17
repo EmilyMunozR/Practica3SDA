@@ -74,10 +74,6 @@ app.config(function ($routeProvider, $locationProvider, $provide) {
             templateUrl: "/crudLibros",
             controller: "crudLibrosCtrl"
         })
-        .when("/crudCategorias", {
-            templateUrl: "/crudCategorias",
-            controller: "crudCategoriasCtrl"
-        })
         .otherwise({
             redirectTo: "/"
         });
@@ -157,26 +153,6 @@ app.service("LibroAPI", function ($q) {
     return deferred.promise;
   }
 })
-//
-//    API DE CATEGORIAS
-///
-app.service("CategoriaAPI", function ($q) {
-  this.categorias = function () {
-    const deferred = $q.defer()
-
-    $.get("/categorias")
-      .done(function (categorias) {
-        deferred.resolve(categorias)
-      })
-      .fail(function (error) {
-        deferred.reject(error)
-      })
-
-    return deferred.promise;
-  }
-})
-
-
 
 
 app.run(["$rootScope", "$location", "$timeout", "SessionService", function($rootScope, $location, $timeout, SessionService) {
@@ -513,101 +489,7 @@ app.controller("crudLibrosCtrl", function ($scope, $http, MensajesService, Libro
     
 });
 
-///
-///    FIN DEL CONTROLADOR DE CRUD LIBROS
-///
 
-///
-///    INICIO DE CONTROLADOR DE CRUD CATEGORIAS
-///
-app.controller("crudCategoriasCtrl", function ($scope, $http, MensajesService) {
-  $scope.categoria = {};
-
-  $scope.cargarCategorias = function () {
-    $("#tbodyCrudCategorias").load("/tbodyCrudCategorias");
-  };
-
-  $scope.guardarCategoria = function () {
-    const datos = {
-      idCategoria: $scope.categoria.idCategoria || "",
-      nombre: $scope.categoria.nombre
-    };
-
-    $http.post("/categoria", $.param(datos), {
-      headers: { "Content-Type": "application/x-www-form-urlencoded" }
-    }).then(function (res) {
-      if (res.data.mensaje) {
-        $scope.limpiarFormulario();
-        $scope.cargarCategorias();
-        MensajesService.pop("📁 Categoría guardada correctamente.");
-      } else {
-        MensajesService.toast(res.data.error || "Error al guardar");
-      }
-    });
-  };
-
-  $scope.limpiarFormulario = function () {
-    $scope.categoria = {};
-  };
-
-  $(document).off("click", ".btnModificarCategoria").on("click", ".btnModificarCategoria", function () {
-    const id = $(this).data("id");
-
-    $.get("/categoria/" + id, function (categoria) {
-      $scope.categoria = categoria;
-      $scope.$apply();
-    });
-  });
-
-  $(document).off("click", ".btnEliminarCategoria").on("click", ".btnEliminarCategoria", function () {
-    const id = $(this).data("id");
-
-    if (confirm("¿Seguro que deseas eliminar esta categoría?")) {
-      $http.post("/categoria/eliminar", $.param({ id: id }), {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" }
-      }).then(function () {
-        $scope.cargarCategorias();
-        MensajesService.pop("❌ Categoría eliminada.");
-      });
-    }
-  });
-
-  $scope.cargarCategorias();
-});
-
-///
-///    FIN DE CONTROLADOR DE CATEGORIAS
-///
-
-
-/*
-// Categorías Controller
-app.controller("categoriasCtrl", function ($scope, $http) {
-    $http.get("/api/categorias")
-        .then(function (respuesta) {
-            $scope.categorias = respuesta.data;
-        });
-});
-
-// Libros Controller
-app.controller("librosCtrl", function ($scope, $http) {
-    $http.get("/api/libros?categoria=drama") // ejemplo
-        .then(function (respuesta) {
-            $scope.libros = respuesta.data;
-        });
-});
-
-//  Detalle de Libro Controller
-app.controller("libroDetalleCtrl", function ($scope, $http, $routeParams) {
-    const id = $routeParams.id;
-    $http.get("/api/libro/" + id)
-        .then(function (respuesta) {
-            $scope.libro = respuesta.data;
-        });
-});
-*/
-
-// Luxon DateTime y variable de fecha/hora
 const DateTime = luxon.DateTime;
 let lxFechaHora = null;
 
@@ -625,7 +507,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 });
 
 /*
-///////////////// integrantes controller
+///////////////////////////////////////////////////////////////////////// Integrantes controller
 app.controller("integrantesCtrl", function ($scope, $http) {
     function buscarIntegrantes() {
         $.get("/tbodyIntegrantes", function (trsHTML) {
@@ -646,9 +528,7 @@ app.controller("integrantesCtrl", function ($scope, $http) {
         console.log("Evento recibido de Pusher");
         buscarIntegrantes();
     });
-
-
-    // Insertar Integrantes
+//////////////////////////////////////////////////////////////////////////// Insertar Integrantes
     $(document).on("submit", "#frmIntegrante", function (event) {
         event.preventDefault();
         
@@ -659,7 +539,6 @@ app.controller("integrantesCtrl", function ($scope, $http) {
             alert("Por favor ingresa un integrante.")
             return
         }
-        
         $.post("/integrante", {
             idIntegrante: id,
             nombreIntegrante: nombreIntegrante
@@ -673,8 +552,7 @@ app.controller("integrantesCtrl", function ($scope, $http) {
         });
     });
 });
-
-// Modificar Integraantes
+///////////////////////////////////////////////////////////////////////////// Modificar Integraantes
 $(document).on("click", ".btnModificarIntegrante", function () {
     const id = $(this).data("id");
 
@@ -686,8 +564,7 @@ $(document).on("click", ".btnModificarIntegrante", function () {
         alert("Error al traer integrante");
     });
 });
-
-// Eliminar Integrantes 
+////////////////////////////////////////////////////////////////////////////// Eliminar Integrantes 
 $(document).on("click", ".btnEliminarIntegrante", function () {
     const id = $(this).data("id");
 
@@ -700,39 +577,3 @@ $(document).on("click", ".btnEliminarIntegrante", function () {
     }
 });
 */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
