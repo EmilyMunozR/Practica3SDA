@@ -1,4 +1,3 @@
-
 # python.exe -m venv .venv
 # cd .venv/Scripts
 # activate.bat
@@ -7,7 +6,6 @@
 
 from functools import wraps
 from flask import Flask, render_template, request, jsonify, make_response, session, redirect, url_for
-
 from flask_cors import CORS, cross_origin
 
 import mysql.connector.pooling
@@ -21,7 +19,6 @@ app.config["SESSION_COOKIE_SECURE"] = False
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 
 CORS(app)
-
 
 con_pool = mysql.connector.pooling.MySQLConnectionPool(
     pool_name="my_pool",
@@ -82,12 +79,15 @@ def tbodyInicio():
         con = con_pool.get_connection()
         cursor = con.cursor(dictionary=True)
 
-        cursor.execute("""
+        cursor.execute
+        (
+        """
             SELECT idLibro, titulo, autor, tipo, precio, portada
             FROM libros
             ORDER BY idLibro DESC
             LIMIT 50
-        """)
+        """
+        )
         libros = cursor.fetchall()
 
         return render_template("tbodyInicio.html", libros=libros)
@@ -99,10 +99,10 @@ def tbodyInicio():
     finally:
         cursor.close()
         con.close()
-
-
-######## Fin de Rutas de INICIO
-
+        
+###########################################################################
+#   Fin Rutas de el Inicio (Pagina Principal)  ############################
+###########################################################################
     
 # Funcionamiento del Inicio de sesion
 @app.route("/iniciarSesion", methods=["POST"])
@@ -113,12 +113,13 @@ def iniciarSesion():
         
     con    = con_pool.get_connection()
     cursor = con.cursor(dictionary=True)
-    sql    = """
-    SELECT IdUsuario, Nombre, Tipo_Usuario
-    FROM usuarios
-            
-    WHERE Nombre = %s 
-    AND Contrasena = %s
+    sql    = 
+    """
+        SELECT IdUsuario, Nombre, Tipo_Usuario
+        FROM usuarios
+                
+        WHERE Nombre = %s 
+        AND Contrasena = %s
     """
     val = (usuario, contrasena)
         
@@ -165,9 +166,9 @@ def preferencias():
     }))
 
 
-
-
-
+#############################################################
+# Rutas de CRUD Libros ######################################
+#############################################################
 
 @app.route("/api/libros")
 @login
@@ -367,8 +368,6 @@ def guardarLibro():
         if cursor: cursor.close()
         if con and con.is_connected(): con.close()
 
-
-
 """
     ELIMINAR los LIBROS
 """
@@ -423,9 +422,6 @@ def logProductos():
         if con and con.is_connected(): con.close()
 
 
-        
-
-
 """
     AUMENTAR POPULARIDAD CON CADA INTERACCION
 """
@@ -449,100 +445,6 @@ def aumentar_popularidad():
     finally:
         if cursor: cursor.close()
         if con and con.is_connected(): con.close()
-
-
-"""
-CATEGORIAS RUTAS
-"""
-@app.route("/categorias")
-@login
-def obtener_categorias():
-    try:
-        con = con_pool.get_connection()
-        cursor = con.cursor(dictionary=True)
-
-        sql = "SELECT id_categoria AS idCategoria, nombre FROM Categoria ORDER BY nombre ASC"
-        cursor.execute(sql)
-        categorias = cursor.fetchall()
-
-        return jsonify(categorias)
-
-    except Exception as e:
-        print("Error en /categorias:", str(e))
-        return jsonify({"error": "Error al obtener categorías"}), 500
-
-    finally:
-        if cursor:
-            cursor.close()
-        if con and con.is_connected():
-            con.close()
-
-"""
-    CRUD CATEGORIAS
-"""
-
-@app.route("/crudCategorias")
-@login
-def crud_categorias():
-    return render_template("crudCategorias.html")
-
-@app.route("/tbodyCrudCategorias")
-@login
-def tbody_categorias():
-    try:
-        con = con_pool.get_connection()
-        cursor = con.cursor(dictionary=True)
-        cursor.execute("SELECT id_categoria, nombre FROM Categoria ORDER BY id_categoria DESC")
-        categorias = cursor.fetchall()
-        return render_template("tbodyCrudCategorias.html", categorias=categorias)
-    except Exception as e:
-        print("Error en /tbodyCrudCategorias:", str(e))
-        return jsonify({"error": "Error interno"}), 500
-    finally:
-        if cursor: cursor.close()
-        if con and con.is_connected(): con.close()
-
-@app.route("/categoria", methods=["POST"])
-@login
-def guardar_categoria():
-    try:
-        id_categoria = request.form.get("idCategoria")
-        nombre = request.form.get("nombre")
-
-        con = con_pool.get_connection()
-        cursor = con.cursor()
-
-        if id_categoria:
-            cursor.execute("UPDATE Categoria SET nombre = %s WHERE id_categoria = %s", (nombre, id_categoria))
-        else:
-            cursor.execute("INSERT INTO Categoria (nombre) VALUES (%s)", (nombre,))
-        con.commit()
-
-        return jsonify({"mensaje": "Categoría guardada correctamente."})
-    except Exception as e:
-        print("Error al guardar categoría:", str(e))
-        return jsonify({"error": "Error al guardar categoría"}), 500
-    finally:
-        if cursor: cursor.close()
-        if con and con.is_connected(): con.close()
-
-@app.route("/categoria/eliminar", methods=["POST"])
-@login
-def eliminar_categoria():
-    try:
-        id_categoria = request.form.get("id")
-        con = con_pool.get_connection()
-        cursor = con.cursor()
-        cursor.execute("DELETE FROM Categoria WHERE id_categoria = %s", (id_categoria,))
-        con.commit()
-        return jsonify({"mensaje": "Categoría eliminada correctamente."})
-    except Exception as e:
-        print("Error al eliminar categoría:", str(e))
-        return jsonify({"error": "Error al eliminar categoría"}), 500
-    finally:
-        if cursor: cursor.close()
-        if con and con.is_connected(): con.close()
-
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
@@ -729,6 +631,7 @@ def eliminarIntegrante():
         if con and con.is_connected():
             con.close()
 """
+
 
 
 
