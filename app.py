@@ -79,15 +79,13 @@ def tbodyInicio():
         con = con_pool.get_connection()
         cursor = con.cursor(dictionary=True)
 
-        cursor.execute
-        (
-        """
+        cursor.execute(
+            """
             SELECT idLibro, titulo, autor, tipo, precio, portada
             FROM libros
             ORDER BY idLibro DESC
             LIMIT 50
-        """
-        )
+            """)
         libros = cursor.fetchall()
 
         return render_template("tbodyInicio.html", libros=libros)
@@ -113,14 +111,13 @@ def iniciarSesion():
         
     con    = con_pool.get_connection()
     cursor = con.cursor(dictionary=True)
-    sql    = 
-    """
-        SELECT IdUsuario, Nombre, Tipo_Usuario
-        FROM usuarios
-                
-        WHERE Nombre = %s 
-        AND Contrasena = %s
-    """
+    sql    = """
+                SELECT IdUsuario, Nombre, Tipo_Usuario
+                FROM usuarios
+                        
+                WHERE Nombre = %s 
+                AND Contrasena = %s
+            """
     val = (usuario, contrasena)
         
     cursor.execute(sql, val)
@@ -631,6 +628,7 @@ def eliminarIntegrante():
         if con and con.is_connected():
             con.close()
 """
+
 
 
 
