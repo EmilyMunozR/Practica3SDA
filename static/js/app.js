@@ -466,7 +466,6 @@ app.controller("crudLibrosCtrl", function ($scope, $http, MensajesService, Libro
     LibroFormularioFacade.obtenerLibroFormulario("").then(function (respuesta) {
         $scope.libro = {}; 
         $scope.categorias = respuesta.categorias;
-        $scope.$apply();
     });
 
 /// GUARDAR LIBRO CON MEDIATOR
@@ -626,5 +625,6 @@ $(document).on("click", ".btnEliminarIntegrante", function () {
     }
 });
 */
+
 
 
