@@ -160,6 +160,22 @@ app.service("LibroAPI", function ($q) {
   }
 })
 
+app.service("CategoriaAPI", function($q, $http) {
+  this.categorias = function() {
+    const deferred = $q.defer();
+
+    $http.get("/api/categorias")
+      .then(function(respuesta) {
+        deferred.resolve(respuesta.data);
+      })
+      .catch(function(error) {
+        deferred.reject(error);
+      });
+
+    return deferred.promise;
+  };
+});
+
 
 app.run(["$rootScope", "$location", "$timeout", "SessionService", function($rootScope, $location, $timeout, SessionService) {
     
@@ -604,3 +620,4 @@ $(document).on("click", ".btnEliminarIntegrante", function () {
     }
 });
 */
+
