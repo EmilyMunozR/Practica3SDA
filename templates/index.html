@@ -169,6 +169,9 @@
         <li class="nav-item" ng-show="login">
             <a class="nav-link" href="#/crudLibros">CRUD Libros</a>
         </li>
+        <li class="nav-item" ng-show="login && tipo == 1">
+            <a class="nav-link" href="#/logs">Logs de Actividad</a>
+        </li>
     </ul>
     <div id="appContent" class="app-content container p-3 {{ '{{ slide }}' }}" ng-view></div>
 
