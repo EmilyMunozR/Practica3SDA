@@ -442,9 +442,21 @@ def aumentar_popularidad():
     finally:
         if cursor: cursor.close()
         if con and con.is_connected(): con.close()
+            
+"""
+    RUTA DE VISTA DE LOGS
+"""
+
+@app.route("/logs")
+def logs_view():
+    return render_template("logs.html")
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
+    
 
 
 
@@ -628,6 +640,7 @@ def eliminarIntegrante():
         if con and con.is_connected():
             con.close()
 """
+
 
 
 
