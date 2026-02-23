@@ -42,12 +42,18 @@ function modal(msg, titulo, opciones) {
     </div>
   `;
   $("body").append(html);
+
   const modalInstance = new bootstrap.Modal(document.getElementById("modalMsg"));
   modalInstance.show();
+
   $("#modalMsg").on("hidden.bs.modal", function () {
+    // 🔧 Limpieza completa
     $(this).remove();
+    $(".modal-backdrop").remove();
+    $("body").removeClass("modal-open");
   });
 }
+
 
 function pop(selector, msg, tipo) {
   $(selector).html(`<div class="alert alert-${tipo}">${msg}</div>`);
@@ -620,4 +626,5 @@ $(document).on("click", ".btnEliminarIntegrante", function () {
     }
 });
 */
+
 
