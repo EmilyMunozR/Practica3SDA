@@ -443,20 +443,52 @@ def aumentar_popularidad():
         if cursor: cursor.close()
         if con and con.is_connected(): con.close()
             
-"""
-    RUTA DE VISTA DE LOGS
-"""
 
+
+
+
+# ---------------------------------------------------------
+# RUTA PARA LA VISTA DE LOGS
+# ---------------------------------------------------------
 @app.route("/logs")
+@admin_required
 def logs_view():
     return render_template("logs.html")
+# ---------------------------------------------------------
+# RUTA PARA OBTENER LOS DATOS
+# ---------------------------------------------------------
+@app.route("/tbodyLogs")
+@admin_required
+def tbodyLogs():
+    try:
+        con = con_pool.get_connection()
+        cursor = con.cursor(dictionary=True)
 
+        # Seleccionamos los últimos 50 logs ordenados por fecha
+        sql = """
+            SELECT idLog, actividad, descripcion, fechaHora
+            FROM LogActividad
+            ORDER BY fechaHora DESC
+            LIMIT 50
+        """
+        cursor.execute(sql)
+        logs = cursor.fetchall()
+        
+        # Formateamos la fecha para que se vea bien
+        return render_template("tbodyLogs.html", logs=logs)
 
+    except Exception as e:
+        print("Error en /tbodyLogs:", str(e))
+        return "Error al cargar logs", 500
+    finally:
+        if cursor: cursor.close()
+        if con and con.is_connected(): con.close()
 
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
-    
+
+ 
 
 
 
@@ -640,6 +672,7 @@ def eliminarIntegrante():
         if con and con.is_connected():
             con.close()
 """
+
 
 
 
