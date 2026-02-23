@@ -1,0 +1,17 @@
+{% for log in logs %}
+<tr class="{% if log.actividad == 'PELIGRO' %}table-danger{% endif %}">
+    <td><span class="badge {% if log.actividad == 'PELIGRO' %}bg-danger{% else %}bg-secondary{% endif %}">{{ log.idLog }}</span></td>
+    
+    <td class="fw-bold {% if log.actividad == 'PELIGRO' %}text-danger{% else %}text-info{% endif %}">
+        {% if log.actividad == 'PELIGRO' %}<i class="bi bi-exclamation-triangle-fill"></i>{% endif %} 
+        {{ log.actividad }}
+    </td>
+    
+    <td>{{ log.descripcion }}</td>
+    <td>{{ log.fechaHora }}</td>
+</tr>
+{% else %}
+<tr>
+    <td colspan="4" class="text-center text-muted">No hay registros de actividad recientes.</td>
+</tr>
+{% endfor %}
