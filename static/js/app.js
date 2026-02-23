@@ -74,6 +74,12 @@ app.config(function ($routeProvider, $locationProvider, $provide) {
             templateUrl: "/crudLibros",
             controller: "crudLibrosCtrl"
         })
+
+        .when("/logs", {
+            templateUrl: "/logs",
+            controller: "logsCtrl"
+        })
+
         .otherwise({
             redirectTo: "/"
         });
@@ -309,7 +315,12 @@ app.controller("loginCtrl", function ($scope, $http, $rootScope, $location, Sess
 
             if (respuesta.mensaje) {
                 $rootScope.login = true;
-            
+
+
+                $rootScope.user = respuesta.usuario.Nombre;
+                $rootScope.tipo = respuesta.usuario.Tipo_Usuario;
+
+                
                 // Guardar en Singleton
                 SessionService.setUsr(respuesta.usuario.Nombre);
                 SessionService.setTipo(respuesta.usuario.Tipo_Usuario);
@@ -487,6 +498,22 @@ app.controller("crudLibrosCtrl", function ($scope, $http, MensajesService, Libro
     });
   });
     
+});
+
+
+
+//
+//   C ONTROLADOR DE LOGS
+//
+app.controller("logsCtrl", function ($scope) {
+    // Función para cargar los logs en la tabla
+    $scope.cargarLogs = function () {
+        $("#tbodyLogs").html('<tr><td colspan="4" class="text-center p-3"><div class="spinner-border text-info" role="status"></div></td></tr>');
+        $("#tbodyLogs").load("/tbodyLogs");
+    };
+
+    // Llamada inicial al entrar a la sección
+    $scope.cargarLogs();
 });
 
 
