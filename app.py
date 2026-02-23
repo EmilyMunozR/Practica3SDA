@@ -213,27 +213,32 @@ def preferencias():
 # Rutas de CRUD Libros ######################################
 #############################################################
 
-@app.route("/api/libros")
-@login
-def api_libros():
+@app.route("/api/categorias")
+def api_categorias():
     try:
         con = con_pool.get_connection()
         cursor = con.cursor(dictionary=True)
-
-        sql = "SELECT id_libro, titulo, autor, tipo FROM Libro ORDER BY id_libro DESC"
-        cursor.execute(sql)
-        libros = cursor.fetchall()
-        return jsonify(libros)
-
-    except Exception as e:
-        print("Error en /api/libros:", str(e))
-        return jsonify({"error": "Error interno al cargar libros"}), 500
-
+        cursor.execute("SELECT idCategoria, nombre FROM Categoria")
+        categorias = cursor.fetchall()
+        return jsonify(categorias)
     finally:
-        if cursor:
-            cursor.close()
-        if con and con.is_connected():
-            con.close()
+        if cursor: cursor.close()
+        if con and con.is_connected(): con.close()
+
+
+@app.route("/libro/<int:id>")
+def api_libro(id):
+    try:
+        con = con_pool.get_connection()
+        cursor = con.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM Libro WHERE idLibro = %s", (id,))
+        libro = cursor.fetchone()
+        if libro:
+            return jsonify(libro)
+        return jsonify({"error": "Libro no encontrado"}), 404
+    finally:
+        if cursor: cursor.close()
+        if con and con.is_connected(): con.close()
 
 
 
@@ -717,3 +722,4 @@ def eliminarIntegrante():
         if con and con.is_connected():
             con.close()
 """
+
