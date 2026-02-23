@@ -55,7 +55,27 @@ def login(fun):
         return fun(*args, **kwargs)
     return decorador
 
-    
+
+
+# ---------------------------------------------------------
+# DECORADOR PARA ADMINS
+# ---------------------------------------------------------
+def admin_required(fun):
+    @wraps(fun)
+    def decorador(*args, **kwargs):
+        # Primero validamos que haya sesión
+        if not session.get("login"):
+            return jsonify({"estado": "error", "respuesta": "No has iniciado sesión"}), 401
+        
+        # Luego validamos que el tipo de usuario sea 1 (Admin)
+        if str(session.get("login-tipo")) != "1":
+            return "Acceso denegado. Solo administradores pueden ver esta sección.", 403
+            
+        return fun(*args, **kwargs)
+    return decorador
+
+
+
 # Ruta de Inicio (Index)
 @app.route("/")
 def index():
@@ -103,9 +123,12 @@ def tbodyInicio():
 ###########################################################################
     
 # Funcionamiento del Inicio de sesion
+
+# ---------------------------------------------------------
+# SE MODIFICO PARA CONTAR INTENTOS FALLIDOS
+# ---------------------------------------------------------
 @app.route("/iniciarSesion", methods=["POST"])
 def iniciarSesion():
-    
     usuario    = request.form["txtUsuario"]
     contrasena = request.form["txtContrasena"]
         
@@ -114,37 +137,60 @@ def iniciarSesion():
     sql    = """
                 SELECT IdUsuario, Nombre, Tipo_Usuario
                 FROM usuarios
-                        
-                WHERE Nombre = %s 
-                AND Contrasena = %s
+                WHERE Nombre = %s AND Contrasena = %s
             """
     val = (usuario, contrasena)
         
     cursor.execute(sql, val)
     registros = cursor.fetchall()
             
-    if cursor:
-        cursor.close()
-    if con and con.is_connected():
-        con.close()
-            
     session["login"]      = False
     session["login-usr"]  = None
     session["login-tipo"] = 0
             
     if registros:
-        usuario = registros[0]
+        # ---- INICIO DE SESIÓN EXITOSO ----
+        usuario_db = registros[0]
         session["login"]      = True
-        session["login-usr"]  = usuario["Nombre"]
-        session["login-tipo"] = usuario["Tipo_Usuario"]
+        session["login-usr"]  = usuario_db["Nombre"]
+        session["login-tipo"] = usuario_db["Tipo_Usuario"]
+        session["intentos_fallidos"] = 0 # Reiniciamos el contador
+        
+        if cursor: cursor.close()
+        if con and con.is_connected(): con.close()
+            
         return jsonify({
             "mensaje": "Inicio de sesión exitoso",
-            "usuario": usuario
+            "usuario": usuario_db
         })
     else:
+        # ---- INICIO DE SESIÓN FALLIDO ----
+        intentos = session.get("intentos_fallidos", 0) + 1
+        session["intentos_fallidos"] = intentos
+        
+        if intentos >= 3:
+            # Guardamos la alerta en LogActividad
+            try:
+                tz = pytz.timezone("America/Matamoros")
+                ahora = datetime.datetime.now(tz)
+                cursor.execute("""
+                    INSERT INTO LogActividad (actividad, descripcion, fechaHora)
+                    VALUES (%s, %s, %s)
+                """, ("PELIGRO", f"Múltiples accesos fallidos (3) intentando acceder al usuario: {usuario}", ahora))
+                con.commit()
+                session["intentos_fallidos"] = 0 # Reiniciamos para no ciclar el log
+            except Exception as e:
+                print("Error al guardar log de peligro:", str(e))
+                
+        if cursor: cursor.close()
+        if con and con.is_connected(): con.close()
+        
         return jsonify({
             "error": "Credenciales incorrectas"
         }), 401
+    
+
+
 
 @app.route("/cerrarSesion", methods=["POST"])
 @login
@@ -442,7 +488,8 @@ def aumentar_popularidad():
     finally:
         if cursor: cursor.close()
         if con and con.is_connected(): con.close()
-            
+
+
 
 
 
@@ -487,8 +534,6 @@ def tbodyLogs():
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
-
- 
 
 
 
@@ -672,34 +717,3 @@ def eliminarIntegrante():
         if con and con.is_connected():
             con.close()
 """
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
