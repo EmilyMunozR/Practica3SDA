@@ -235,7 +235,7 @@ def api_libro(id):
     try:
         con = con_pool.get_connection()
         cursor = con.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM Libro WHERE idLibro = %s", (id,))
+        cursor.execute("SELECT * FROM Libro WHERE id_libro = %s", (id,))
         libro = cursor.fetchone()
         if libro:
             return jsonify(libro)
@@ -729,5 +729,6 @@ def eliminarIntegrante():
         if con and con.is_connected():
             con.close()
 """
+
 
 
