@@ -318,13 +318,19 @@ app.factory("LibroCategoriaFactory", function () {
 app.factory("LibroFormularioFacade", function (LibroAPI, CategoriaAPI, $q) {
   return {
     obtenerLibroFormulario: function (idLibro) {
-      return $q.all({
-        libro: LibroAPI.libro(idLibro),
+      const promesas = {
         categorias: CategoriaAPI.categorias()
-      });
+      };
+
+      if (idLibro) {
+        promesas.libro = LibroAPI.libro(idLibro);
+      }
+
+      return $q.all(promesas);
     }
   };
 });
+
 
 // Inicio de Sesion Controller
 app.controller("loginCtrl", function ($scope, $http, $rootScope, $location, SessionService) {
@@ -625,6 +631,7 @@ $(document).on("click", ".btnEliminarIntegrante", function () {
     }
 });
 */
+
 
 
 
