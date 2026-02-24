@@ -221,9 +221,13 @@ def api_categorias():
         cursor.execute("SELECT idCategoria, nombre FROM Categoria")
         categorias = cursor.fetchall()
         return jsonify(categorias)
+    except Exception as e:
+        print("Error en /api/categorias:", e)
+        return jsonify({"error": str(e)}), 500
     finally:
         if cursor: cursor.close()
         if con and con.is_connected(): con.close()
+
 
 
 @app.route("/libro/<int:id>")
@@ -236,6 +240,9 @@ def api_libro(id):
         if libro:
             return jsonify(libro)
         return jsonify({"error": "Libro no encontrado"}), 404
+    except Exception as e:
+        print("Error en /libro/<id>:", e)
+        return jsonify({"error": str(e)}), 500
     finally:
         if cursor: cursor.close()
         if con and con.is_connected(): con.close()
@@ -722,4 +729,5 @@ def eliminarIntegrante():
         if con and con.is_connected():
             con.close()
 """
+
 
