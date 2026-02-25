@@ -334,39 +334,63 @@ app.factory("LibroFormularioFacade", function (LibroAPI, CategoriaAPI, $q) {
 
 // Inicio de Sesion Controller
 app.controller("loginCtrl", function ($scope, $http, $rootScope, $location, SessionService) {
-    $rootScope.login = false;
-    $("#frmInicioSesion").submit(function (event) {
-        event.preventDefault();
+  $rootScope.login = false;
+  let intentosFallidos = 0;
+  let bloqueado = false;
 
-        $.post("/iniciarSesion", $(this).serialize(), function (respuesta) {
-            enableAll();
+  $("#frmInicioSesion").submit(function (event) {
+    event.preventDefault();
 
-            if (respuesta.mensaje) {
-                $rootScope.login = true;
+    if (bloqueado) {
+      pop(".div-inicio-sesion", "Demasiados intentos. Espera 30 segundos.", "danger");
+      return;
+    }
 
+    $.post("/iniciarSesion", $(this).serialize(), function (respuesta) {
+      enableAll();
 
-                $rootScope.user = respuesta.usuario.Nombre;
-                $rootScope.tipo = respuesta.usuario.Tipo_Usuario;
+      if (respuesta.mensaje) {
+        intentosFallidos = 0; // reset
+        $rootScope.login = true;
+        $rootScope.user = respuesta.usuario.Nombre;
+        $rootScope.tipo = respuesta.usuario.Tipo_Usuario;
 
-                
-                // Guardar en Singleton
-                SessionService.setUsr(respuesta.usuario.Nombre);
-                SessionService.setTipo(respuesta.usuario.Tipo_Usuario);
-            
-                // Guardar en localStorage para que app.run() lo lea
-                localStorage.setItem("preferencias", JSON.stringify({
-                    usr: respuesta.usuario.Nombre,
-                    tipo: respuesta.usuario.Tipo_Usuario
-                }));
-            
-                window.location.href = "#/inicio";
-                return;
-            }
-            pop(".div-inicio-sesion", "Usuario y/o contrase&ntilde;a incorrecto(s)", "danger");
+        SessionService.setUsr(respuesta.usuario.Nombre);
+        SessionService.setTipo(respuesta.usuario.Tipo_Usuario);
+
+        localStorage.setItem("preferencias", JSON.stringify({
+          usr: respuesta.usuario.Nombre,
+          tipo: respuesta.usuario.Tipo_Usuario
+        }));
+
+        window.location.href = "#/inicio";
+        return;
+      }
+
+      // Fallo
+      intentosFallidos++;
+      pop(".div-inicio-sesion", "Usuario y/o contraseña incorrecto(s)", "danger");
+
+      if (intentosFallidos >= 3) {
+        bloqueado = true;
+        pop(".div-inicio-sesion", "Has fallado 3 veces. Bloqueado por 30 segundos.", "danger");
+
+        // 🔒 Registrar en logs
+        $.post("/app/log", {
+          actividad: "Alerta",
+          descripcion: "Usuario bloqueado por intentos fallidos de inicio de sesión"
         });
 
-        disableAll();
+        setTimeout(function () {
+          bloqueado = false;
+          intentosFallidos = 0;
+          pop(".div-inicio-sesion", "Ya puedes volver a intentar.", "info");
+        }, 30000);
+      }
     });
+
+    disableAll();
+  });
 });
 
 
@@ -527,6 +551,18 @@ app.controller("crudLibrosCtrl", function ($scope, $http, MensajesService, Libro
     
 });
 
+$(document).on("click", "#btnCerrarSesion", function () {
+  $.post("/cerrarSesion", function (respuesta) {
+    // Limpia localStorage y variables
+    localStorage.removeItem("preferencias");
+    SessionService.setUsr(null);
+    SessionService.setTipo(0);
+
+    // Redirige al login
+    window.location.href = "#/";
+    MensajesService.pop("Sesión cerrada correctamente");
+  });
+});
 
 
 //
@@ -631,6 +667,7 @@ $(document).on("click", ".btnEliminarIntegrante", function () {
     }
 });
 */
+
 
 
 
