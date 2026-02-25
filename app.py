@@ -186,7 +186,7 @@ def iniciarSesion():
         intentos = session.get("intentos_fallidos", 0) + 1
         session["intentos_fallidos"] = intentos
         
-        mensaje_error = "Credenciales incorrectas"
+        mensaje_error = f"Credenciales incorrectas. Intento {intentos} de 3."
         codigo_estado = 401
         extra_data = {}
 
@@ -761,6 +761,7 @@ def eliminarIntegrante():
         if con and con.is_connected():
             con.close()
 """
+
 
 
 
