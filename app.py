@@ -188,7 +188,7 @@ def iniciarSesion():
         
         mensaje_error = f"Credenciales incorrectas. Intento {intentos} de 3."
         codigo_estado = 401
-        extra_data = {}
+        extra_data = {"intentos": intentos}
 
         if intentos >= 3:
             # 3. APLICAR BLOQUEO Y GUARDAR LOG
@@ -761,6 +761,7 @@ def eliminarIntegrante():
         if con and con.is_connected():
             con.close()
 """
+
 
 
 
