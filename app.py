@@ -12,6 +12,7 @@ import mysql.connector.pooling
 import pusher
 import pytz
 import datetime
+import timme
 
 app = Flask(__name__)
 app.secret_key = "clave_secreta"  
@@ -127,34 +128,51 @@ def tbodyInicio():
 # ---------------------------------------------------------
 # SE MODIFICO PARA CONTAR INTENTOS FALLIDOS
 # ---------------------------------------------------------
+# Asegúrate de importar esto al inicio si no lo tienes
+import time 
+
 @app.route("/iniciarSesion", methods=["POST"])
 def iniciarSesion():
+    # 1. VERIFICAR BLOQUEO EXISTENTE
+    bloqueo_timestamp = session.get("bloqueo_hasta")
+    if bloqueo_timestamp:
+        ahora = datetime.datetime.now().timestamp()
+        if ahora < bloqueo_timestamp:
+            restante = int(bloqueo_timestamp - ahora)
+            return jsonify({
+                "error": f"Sistema bloqueado por seguridad. Espera {restante}s",
+                "bloqueo": True,
+                "tiempo": restante
+            }), 429  # Código HTTP 429: Too Many Requests
+        else:
+            # El tiempo ya pasó, limpiamos el bloqueo y el contador
+            session.pop("bloqueo_hasta", None)
+            session["intentos_fallidos"] = 0
+
+    # 2. PROCESO NORMAL DE LOGIN
     usuario    = request.form["txtUsuario"]
     contrasena = request.form["txtContrasena"]
         
     con    = con_pool.get_connection()
     cursor = con.cursor(dictionary=True)
-    sql    = """
-                SELECT IdUsuario, Nombre, Tipo_Usuario
-                FROM usuarios
-                WHERE Nombre = %s AND Contrasena = %s
-            """
-    val = (usuario, contrasena)
-        
-    cursor.execute(sql, val)
+    
+    # Validamos credenciales
+    sql = "SELECT IdUsuario, Nombre, Tipo_Usuario FROM usuarios WHERE Nombre = %s AND Contrasena = %s"
+    cursor.execute(sql, (usuario, contrasena))
     registros = cursor.fetchall()
             
-    session["login"]      = False
-    session["login-usr"]  = None
+    # Limpiamos sesión previa por seguridad
+    session["login"] = False
+    session["login-usr"] = None
     session["login-tipo"] = 0
             
     if registros:
-        # ---- INICIO DE SESIÓN EXITOSO ----
+        # ---- ÉXITO ----
         usuario_db = registros[0]
-        session["login"]      = True
-        session["login-usr"]  = usuario_db["Nombre"]
+        session["login"] = True
+        session["login-usr"] = usuario_db["Nombre"]
         session["login-tipo"] = usuario_db["Tipo_Usuario"]
-        session["intentos_fallidos"] = 0 # Reiniciamos el contador
+        session["intentos_fallidos"] = 0 # Reiniciar contador
         
         if cursor: cursor.close()
         if con and con.is_connected(): con.close()
@@ -164,31 +182,45 @@ def iniciarSesion():
             "usuario": usuario_db
         })
     else:
-        # ---- INICIO DE SESIÓN FALLIDO ----
+        # ---- FALLO ----
         intentos = session.get("intentos_fallidos", 0) + 1
         session["intentos_fallidos"] = intentos
         
+        mensaje_error = "Credenciales incorrectas"
+        codigo_estado = 401
+        extra_data = {}
+
         if intentos >= 3:
-            # Guardamos la alerta en LogActividad
+            # 3. APLICAR BLOQUEO Y GUARDAR LOG
             try:
                 tz = pytz.timezone("America/Matamoros")
-                ahora = datetime.datetime.now(tz)
+                ahora_log = datetime.datetime.now(tz)
+                
+                # Guardamos el LOG DE PELIGRO
                 cursor.execute("""
                     INSERT INTO LogActividad (actividad, descripcion, fechaHora)
                     VALUES (%s, %s, %s)
-                """, ("PELIGRO", f"Múltiples accesos fallidos (3) intentando acceder al usuario: {usuario}", ahora))
+                """, ("PELIGRO", f"Se intento iniciar sesion con el usuario '{usuario}' 3 veces. Sistema bloqueado temporalmente.", ahora_log))
                 con.commit()
-                session["intentos_fallidos"] = 0 # Reiniciamos para no ciclar el log
+                
+                # ACTIVAMOS EL BLOQUEO (Hora actual + 15 segundos)
+                session["bloqueo_hasta"] = datetime.datetime.now().timestamp() + 15
+                
+                mensaje_error = "Has excedido los intentos. Bloqueando sistema por 15s."
+                codigo_estado = 429
+                extra_data = {"bloqueo": True, "tiempo": 15}
+                
+                # NO reiniciamos 'intentos_fallidos' a 0 aquí, lo haremos cuando expire el tiempo
+                
             except Exception as e:
-                print("Error al guardar log de peligro:", str(e))
+                print("Error al guardar log:", str(e))
                 
         if cursor: cursor.close()
         if con and con.is_connected(): con.close()
         
-        return jsonify({
-            "error": "Credenciales incorrectas"
-        }), 401
-    
+        respuesta = {"error": mensaje_error}
+        respuesta.update(extra_data)
+        return jsonify(respuesta), codigo_estado    
 
 
 
@@ -729,6 +761,7 @@ def eliminarIntegrante():
         if con and con.is_connected():
             con.close()
 """
+
 
 
 
