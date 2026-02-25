@@ -12,7 +12,7 @@ import mysql.connector.pooling
 import pusher
 import pytz
 import datetime
-import timme
+import time
 
 app = Flask(__name__)
 app.secret_key = "clave_secreta"  
@@ -761,6 +761,7 @@ def eliminarIntegrante():
         if con and con.is_connected():
             con.close()
 """
+
 
 
 
