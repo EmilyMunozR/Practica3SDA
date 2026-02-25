@@ -333,66 +333,71 @@ app.factory("LibroFormularioFacade", function (LibroAPI, CategoriaAPI, $q) {
 
 
 // Inicio de Sesion Controller
-app.controller("loginCtrl", function ($scope, $http, $rootScope, $location, SessionService) {
-  $rootScope.login = false;
-  let intentosFallidos = 0;
-  let bloqueado = false;
+app.controller("loginCtrl", function ($scope, $http, $rootScope, $location, SessionService, $timeout) { // Agregamos $timeout
+    $rootScope.login = false;
+    
+    $("#frmInicioSesion").submit(function (event) {
+        event.preventDefault();
+        
+        // Si ya hay un bloqueo visual activo, no hacemos nada
+        if ($("#btnIngresar").prop("disabled") && $("#btnIngresar").hasClass("bloqueado-temp")) return;
 
-  $("#frmInicioSesion").submit(function (event) {
-    event.preventDefault();
-
-    if (bloqueado) {
-      pop(".div-inicio-sesion", "Demasiados intentos. Espera 30 segundos.", "danger");
-      return;
-    }
-
-    $.post("/iniciarSesion", $(this).serialize(), function (respuesta) {
-      enableAll();
-
-      if (respuesta.mensaje) {
-        intentosFallidos = 0; // reset
-        $rootScope.login = true;
-        $rootScope.user = respuesta.usuario.Nombre;
-        $rootScope.tipo = respuesta.usuario.Tipo_Usuario;
-
-        SessionService.setUsr(respuesta.usuario.Nombre);
-        SessionService.setTipo(respuesta.usuario.Tipo_Usuario);
-
-        localStorage.setItem("preferencias", JSON.stringify({
-          usr: respuesta.usuario.Nombre,
-          tipo: respuesta.usuario.Tipo_Usuario
-        }));
-
-        window.location.href = "#/inicio";
-        return;
-      }
-
-      // Fallo
-      intentosFallidos++;
-      pop(".div-inicio-sesion", "Usuario y/o contraseña incorrecto(s)", "danger");
-
-      if (intentosFallidos >= 3) {
-        bloqueado = true;
-        pop(".div-inicio-sesion", "Has fallado 3 veces. Bloqueado por 30 segundos.", "danger");
-
-        // 🔒 Registrar en logs
-        $.post("/app/log", {
-          actividad: "Alerta",
-          descripcion: "Usuario bloqueado por intentos fallidos de inicio de sesión"
+        $.post("/iniciarSesion", $(this).serialize(), function (respuesta) {
+            enableAll();
+            if (respuesta.mensaje) {
+                $rootScope.login = true;
+                $rootScope.user = respuesta.usuario.Nombre;
+                $rootScope.tipo = respuesta.usuario.Tipo_Usuario;
+                SessionService.setUsr(respuesta.usuario.Nombre);
+                SessionService.setTipo(respuesta.usuario.Tipo_Usuario);
+                localStorage.setItem("preferencias", JSON.stringify({
+                    usr: respuesta.usuario.Nombre,
+                    tipo: respuesta.usuario.Tipo_Usuario
+                }));
+                window.location.href = "#/inicio";
+            }
+        }).fail(function(err) {
+            enableAll(); // Primero habilitamos por si acaso
+            
+            let msg = err.responseJSON?.error || "Error de conexión";
+            let esBloqueo = err.status === 429 || err.responseJSON?.bloqueo;
+            
+            if (esBloqueo) {
+                let tiempoRestante = err.responseJSON?.tiempo || 15;
+                iniciarCuentaRegresiva(tiempoRestante);
+            } else {
+                pop(".div-inicio-sesion", msg, "danger");
+            }
         });
-
-        setTimeout(function () {
-          bloqueado = false;
-          intentosFallidos = 0;
-          pop(".div-inicio-sesion", "Ya puedes volver a intentar.", "info");
-        }, 30000);
-      }
+        
+        disableAll();
     });
 
-    disableAll();
-  });
+    // Función visual para bloquear la pantalla/botón
+    function iniciarCuentaRegresiva(segundos) {
+        const btn = $("#btnIngresar"); // Asegúrate que tu botón en login.html tenga id="btnIngresar" o usa la clase
+        const inputs = $("#frmInicioSesion input");
+        
+        // Bloqueamos
+        inputs.prop("disabled", true);
+        btn.prop("disabled", true).addClass("bloqueado-temp bg-danger border-danger");
+        
+        function tick() {
+            if (segundos > 0) {
+                btn.html(`<i class="bi bi-lock-fill"></i> Espere ${segundos}s...`);
+                pop(".div-inicio-sesion", `Sistema bloqueado temporalmente. Reintente en ${segundos}s`, "danger");
+                segundos--;
+                $timeout(tick, 1000);
+            } else {
+                // Desbloqueamos
+                inputs.prop("disabled", false);
+                btn.prop("disabled", false).removeClass("bloqueado-temp bg-danger border-danger").html("Ingresar");
+                $(".div-inicio-sesion").empty(); // Limpiar mensaje de alerta
+            }
+        }
+        tick();
+    }
 });
-
 
 // Inicio Controller 
 app.controller("inicioCtrl", ["$scope", "$http", "SessionService", function ($scope, $http, SessionService) {
@@ -667,6 +672,7 @@ $(document).on("click", ".btnEliminarIntegrante", function () {
     }
 });
 */
+
 
 
 
